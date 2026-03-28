@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EngageChain — AI-Native Opinion Protocol</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ══ NOISE OVERLAY ══════════════════════════════════════════════════════ -->
+  <div class="noise"></div>
+
+  <!-- ══ HEADER ═════════════════════════════════════════════════════════════ -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-mark">◈</span>
+        <span class="logo-text">EngageChain</span>
+        <span class="logo-tag">TESTNET</span>
+      </div>
+      <nav class="nav">
+        <a href="#submit" class="nav-link">Submit</a>
+        <a href="#feed" class="nav-link">Feed</a>
+        <a href="#about" class="nav-link">Protocol</a>
+        <button class="btn-connect" id="btn-connect" onclick="connectWallet()">
+          <span class="btn-dot"></span> Connect Wallet
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ══ HERO ═══════════════════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="pulse-dot"></span> Powered by GenLayer Optimistic Democracy
+      </div>
+      <h1 class="hero-title">
+        Opinions,<br/>
+        <span class="hero-accent">Verified.</span><br/>
+        On-Chain.
+      </h1>
+      <p class="hero-desc">
+        EngageChain turns any opinion into a verifiable verdict.
+        AI evaluates, validators reach consensus, the result is stored
+        on-chain — permanently.
+      </p>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num" id="stat-total">0</span>
+          <span class="stat-label">Submissions</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">GenLayer</span>
+          <span class="stat-label">Network</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">LLM</span>
+          <span class="stat-label">AI Engine</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="flow-diagram">
+        <div class="flow-node fn-input">
+          <span class="fn-icon">✍</span>
+          <span class="fn-label">Human Input</span>
+        </div>
+        <div class="flow-arrow">
+          <span class="flow-line"></span>
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 0l8 8-8 8V0z" fill="currentColor"/></svg>
+        </div>
+        <div class="flow-node fn-ai">
+          <span class="fn-icon">◉</span>
+          <span class="fn-label">AI Eval</span>
+        </div>
+        <div class="flow-arrow">
+          <span class="flow-line"></span>
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 0l8 8-8 8V0z" fill="currentColor"/></svg>
+        </div>
+        <div class="flow-node fn-consensus">
+          <span class="fn-icon">⬡</span>
+          <span class="fn-label">Consensus</span>
+        </div>
+        <div class="flow-arrow">
+          <span class="flow-line"></span>
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 0l8 8-8 8V0z" fill="currentColor"/></svg>
+        </div>
+        <div class="flow-node fn-chain">
+          <span class="fn-icon">⛓</span>
+          <span class="fn-label">On-Chain</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SUBMIT PANEL ════════════════════════════════════════════════════════ -->
+  <section class="submit-section" id="submit">
+    <div class="section-container">
+      <div class="section-label">01 — SUBMIT</div>
+      <h2 class="section-title">Submit Your Opinion</h2>
+      <p class="section-sub">Write an opinion, proposal, or dispute. The AI analyzes it and GenLayer reaches consensus.</p>
+
+      <div class="submit-card">
+        <div class="submit-card-inner">
+          <div class="field-group">
+            <label class="field-label">
+              <span>Your Opinion / Proposal</span>
+              <span class="char-count" id="char-count">0 / 2000</span>
+            </label>
+            <textarea
+              id="opinion-text"
+              class="opinion-textarea"
+              placeholder="Write your opinion, proposal, or dispute here…"
+              maxlength="2000"
+              rows="6"
+              oninput="updateCharCount()"
+            ></textarea>
+          </div>
+
+          <div class="submit-meta">
+            <div class="meta-item">
+              <span class="meta-dot dot-pending"></span>
+              <span>Pending → Evaluated → Finalized</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-icon">◉</span>
+              <span>LLM analysis included</span>
+            </div>
+          </div>
+
+          <div class="submit-actions">
+            <button class="btn-primary" id="btn-submit" onclick="submitOpinion()">
+              <span class="btn-spinner hidden" id="submit-spinner">⟳</span>
+              <span id="submit-label">Submit to GenLayer</span>
+            </button>
+          </div>
+
+          <!-- Submit result -->
+          <div class="submit-result hidden" id="submit-result">
+            <div class="result-header">
+              <span class="result-icon">✓</span>
+              <span>Opinion submitted · ID: <strong id="result-id">—</strong></span>
+            </div>
+            <div class="result-row">
+              <span class="result-key">Status</span>
+              <span class="status-badge status-pending" id="result-status">pending</span>
+            </div>
+            <div class="result-row">
+              <span class="result-key">Tx Hash</span>
+              <span class="result-val monospace" id="result-tx">—</span>
+            </div>
+            <button class="btn-secondary mt-8" onclick="evaluateOpinion()">
+              <span class="btn-spinner hidden" id="eval-spinner">⟳</span>
+              <span id="eval-label">▶ Evaluate with AI</span>
+            </button>
+          </div>
+
+          <!-- AI eval result -->
+          <div class="ai-result hidden" id="ai-result">
+            <div class="ai-result-header">
+              <span class="ai-badge">◉ AI Response</span>
+              <span class="ai-badge-consensus">⬡ Pending consensus</span>
+            </div>
+            <div class="ai-body" id="ai-body">
+              <div class="ai-field">
+                <span class="ai-key">Summary</span>
+                <span class="ai-val" id="ai-summary">—</span>
+              </div>
+              <div class="ai-field">
+                <span class="ai-key">Sentiment</span>
+                <span class="ai-val" id="ai-sentiment">—</span>
+              </div>
+              <div class="ai-field">
+                <span class="ai-key">Category</span>
+                <span class="ai-val" id="ai-category">—</span>
+              </div>
+              <div class="ai-field">
+                <span class="ai-key">Key Points</span>
+                <ul class="ai-list" id="ai-points"></ul>
+              </div>
+              <div class="ai-field">
+                <span class="ai-key">Recommendation</span>
+                <span class="ai-val ai-rec" id="ai-recommendation">—</span>
+              </div>
+              <div class="ai-field">
+                <span class="ai-key">Confidence</span>
+                <div class="confidence-bar-wrap">
+                  <div class="confidence-bar" id="confidence-bar"></div>
+                  <span class="confidence-val" id="confidence-val">—</span>
+                </div>
+              </div>
+            </div>
+            <button class="btn-primary mt-8" onclick="finalizeOpinion()">
+              <span class="btn-spinner hidden" id="final-spinner">⟳</span>
+              <span id="final-label">⬡ Finalize on-chain</span>
+            </button>
+          </div>
+
+          <!-- Finalized -->
+          <div class="finalized-banner hidden" id="finalized-banner">
+            <span class="fin-icon">⛓</span>
+            <div>
+              <div class="fin-title">Opinion Finalized</div>
+              <div class="fin-sub">Consensus verdict recorded on-chain using Optimistic Democracy.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ LOOK UP OPINION ═════════════════════════════════════════════════════ -->
+  <section class="lookup-section">
+    <div class="section-container">
+      <div class="section-label">02 — LOOKUP</div>
+      <h2 class="section-title">Read from Chain</h2>
+      <p class="section-sub">Enter an ID to read any opinion recorded in the contract.</p>
+      <div class="lookup-row">
+        <input
+          type="number"
+          id="lookup-id"
+          class="lookup-input"
+          placeholder="Opinion ID (e.g. 0)"
+          min="0"
+        />
+        <button class="btn-primary" onclick="lookupOpinion()">
+          <span class="btn-spinner hidden" id="lookup-spinner">⟳</span>
+          <span id="lookup-label">Read</span>
+        </button>
+      </div>
+      <div class="lookup-result hidden" id="lookup-result">
+        <div class="lookup-card">
+          <div class="lc-row"><span class="lc-key">ID</span><span class="lc-val" id="lc-id">—</span></div>
+          <div class="lc-row"><span class="lc-key">Status</span><span class="lc-val" id="lc-status">—</span></div>
+          <div class="lc-row"><span class="lc-key">Author</span><span class="lc-val monospace small" id="lc-author">—</span></div>
+          <div class="lc-row"><span class="lc-key">Text</span><span class="lc-val" id="lc-text">—</span></div>
+          <div class="lc-row"><span class="lc-key">AI Response</span><span class="lc-val small" id="lc-ai">—</span></div>
+          <div class="lc-row"><span class="lc-key">Verdict</span><span class="lc-val" id="lc-verdict">—</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PROTOCOL INFO ═══════════════════════════════════════════════════════ -->
+  <section class="about-section" id="about">
+    <div class="section-container">
+      <div class="section-label">03 — PROTOCOL</div>
+      <h2 class="section-title">How It Works</h2>
+      <div class="protocol-grid">
+        <div class="protocol-card">
+          <div class="pc-num">01</div>
+          <div class="pc-icon">✍</div>
+          <h3 class="pc-title">Human Input</h3>
+          <p class="pc-desc">The user submits an opinion, proposal, or dispute. The GenLayer Python contract records it with a unique ID and marks it as <em>pending</em>.</p>
+        </div>
+        <div class="protocol-card">
+          <div class="pc-num">02</div>
+          <div class="pc-icon">◉</div>
+          <h3 class="pc-title">AI Evaluation</h3>
+          <p class="pc-desc">The Intelligent Contract calls the LLM via <code>gl.exec_prompt()</code>. The AI analyzes the text and generates a structured JSON verdict.</p>
+        </div>
+        <div class="protocol-card">
+          <div class="pc-num">03</div>
+          <div class="pc-icon">⬡</div>
+          <h3 class="pc-title">Optimistic Democracy</h3>
+          <p class="pc-desc">GenLayer validators run the same prompt locally and compare results using the <em>Equivalence Principle</em>. Semantically equivalent outputs are accepted.</p>
+        </div>
+        <div class="protocol-card">
+          <div class="pc-num">04</div>
+          <div class="pc-icon">⛓</div>
+          <h3 class="pc-title">On-Chain Record</h3>
+          <p class="pc-desc">The consensus verdict is stored in the contract. Anyone can verify the opinion, AI response, and final status without centralized trust.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CONFIG PANEL (testnet) ══════════════════════════════════════════════ -->
+  <section class="config-section">
+    <div class="section-container">
+      <div class="section-label">⚙ CONFIG</div>
+      <h2 class="section-title">Network Settings</h2>
+      <p class="section-sub">Configure the address of your contract deployed in GenLayer Studio or testnet.</p>
+      <div class="config-grid">
+        <div class="config-field">
+          <label class="field-label">Contract Address</label>
+          <input type="text" id="cfg-contract" class="config-input" placeholder="0x..." />
+        </div>
+        <div class="config-field">
+          <label class="field-label">RPC Endpoint</label>
+          <input type="text" id="cfg-rpc" class="config-input" value="https://studio.genlayer.com:8443/api" />
+        </div>
+        <div class="config-field">
+          <label class="field-label">Private Key (testnet only)</label>
+          <input type="password" id="cfg-key" class="config-input" placeholder="0x..." />
+        </div>
+        <div class="config-field">
+          <label class="field-label">Account Address</label>
+          <input type="text" id="cfg-account" class="config-input" placeholder="0x..." />
+        </div>
+      </div>
+      <button class="btn-secondary" onclick="saveConfig()">Save Config</button>
+      <span class="config-saved hidden" id="config-saved">✓ Saved</span>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ═══════════════════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="logo-mark">◈</span> EngageChain
+      </div>
+      <div class="footer-links">
+        <span class="footer-item">Built on GenLayer</span>
+        <span class="footer-sep">·</span>
+        <span class="footer-item">Intelligent Contracts</span>
+        <span class="footer-sep">·</span>
+        <span class="footer-item">Optimistic Democracy</span>
+      </div>
+      <div class="footer-note">Testnet · Not for production use</div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
